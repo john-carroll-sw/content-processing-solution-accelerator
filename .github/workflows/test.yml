@@ -62,14 +62,14 @@ jobs:
         run: |
           echo "Skipping backend tests because no test files were found."
 
-  # frontend_tests:
-  #   runs-on: ubuntu-latest
+  frontend_tests:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: "20"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
