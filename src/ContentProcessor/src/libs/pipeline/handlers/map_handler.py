@@ -164,7 +164,7 @@ class MapHandler(HandlerBase):
         user_content.append(
             {
                 "type": "text",
-                "text": """Extract the data from this Document. 
+                "text": """Extract the data from this Document.
             - If a value is not present, provide null.
             - Some values must be inferred based on the rules defined in the policy and Contents.
             - Dates should be in the format YYYY-MM-DD.""",
