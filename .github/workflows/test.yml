@@ -43,7 +43,7 @@ jobs:
         id: check_backend_tests
         run: |
 
-          if [ -z "$(find src/ContentProcessorAPI/app/test_s -type f -name 'test_*.py')" ]; then
+          if [ -z "$(find src/ContentProcessorAPI/app/tests -type f -name 'test_*.py')" ]; then
             echo "No backend test files found, skipping backend tests."
             echo "skip_backend_tests=true" >> $GITHUB_ENV
           else
@@ -54,7 +54,7 @@ jobs:
       - name: Run Backend Tests with Coverage
         if: env.skip_backend_tests == 'false'
         run: |
-          pytest src/ContentProcessorAPI/app/test_s
+          pytest src/ContentProcessorAPI/app/tests
           pytest --cov=. --cov-report=term-missing --cov-report=xml
 
       - name: Skip Backend Tests
