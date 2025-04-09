@@ -45,13 +45,14 @@ app_helper.read_and_set_environmental_variables()
 app_config = AppConfiguration()
 
 if app_config.app_logging_enable:
-# Read Configuration for Logging Level as a Text then retrive the logging level
+    # Read Configuration for Logging Level as a Text then retrive the logging level
     logging_level = getattr(
         logging, app_config.app_logging_level
     )
     logging.basicConfig(level=logging_level)
 else:
     logging.disable(logging.CRITICAL)
+
 
 # Dependency Function
 def get_app_config() -> AppConfiguration:
