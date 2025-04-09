@@ -32,6 +32,7 @@ class AppConfiguration(ModelBaseSettings):
     app_logging_enable: bool
     app_logging_level: str
 
+
 # Read .env file
 # Get Current Path + .env file
 env_file_path = os.path.join(os.path.dirname(__file__), ".env")
