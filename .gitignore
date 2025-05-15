@@ -14,3 +14,7 @@ wheels/
 *.exe
 *.msi
 *.log
+kaggle-resume-dataset/
+src/ContentProcessorWeb/something.md
+
+.DS_Store
