@@ -18,3 +18,5 @@ kaggle-resume-dataset/
 src/ContentProcessorWeb/something.md
 
 .DS_Store
+.vscode/settings.json
+src/ContentProcessorWeb/tryingtoDebug.sh
