@@ -5,7 +5,7 @@ param containerAppName string
 param containerEnvId string
 
 // Managed identity with ACR pull role
-param managedIdentityId string
+param managedIdentityId string = ''
 
 param azureContainerRegistry string
 param azureContainerRegistryImage string
@@ -23,7 +23,9 @@ param useLocalBuild string = 'false'
 resource processorContainerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: location
-  identity: {
+  identity: empty(managedIdentityId) ? {
+    type: 'SystemAssigned'
+  } : {
     type: 'SystemAssigned, UserAssigned'
     userAssignedIdentities: {
       '${managedIdentityId}': {}

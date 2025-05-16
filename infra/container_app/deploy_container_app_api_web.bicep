@@ -100,7 +100,6 @@ module containerAppApi 'deploy_container_app.bicep' = {
     azureContainerRegistry: azureContainerRegistry
     azureContainerRegistryImage: 'contentprocessorapi'
     azureContainerRegistryImageTag: 'latest'
-    managedIdentityId: containerRegistryReaderId
     allowedOrigins: [containerAppWebEndpoint]
     containerEnvVars: [
       {
@@ -109,6 +108,7 @@ module containerAppApi 'deploy_container_app.bicep' = {
       }
     ]
     probes: probes
+    managedIdentityId: '' // Use system-assigned managed identity for API app
     minReplicas: minReplicaContainerApi
     maxReplicas: maxReplicaContainerApi
     useLocalBuild: useLocalBuild
@@ -128,7 +128,7 @@ module containerAppWeb 'deploy_container_app.bicep' = {
     containerEnvVars: [
       {
         name: 'APP_API_BASE_URL'
-        value: containerAppApiEndpoint
+        value: containerAppApi.outputs.containerEndPoint
       }
       {
         name: 'APP_WEB_CLIENT_ID'
