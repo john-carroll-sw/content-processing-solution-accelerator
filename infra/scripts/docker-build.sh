@@ -60,23 +60,23 @@ if [ "$USE_LOCAL_BUILD" = "true" ]; then
         exit 1
     fi
 
-    # Build and push Docker images
+    # Build and push Docker images for linux/amd64, with separate logging
     for service in "ContentProcessor" "ContentProcessorAPI" "ContentProcessorWeb"; do
         IMAGE_VAR_NAME="${service^^}_IMAGE_URI"
         IMAGE_URI=${!IMAGE_VAR_NAME}
 
-        echo "Building Docker image: $IMAGE_URI"
-        if ! docker build "./src/$service/." --no-cache -t "$IMAGE_URI"; then
-            echo "Failed to build Docker image"
+        echo "Building Docker image (linux/amd64): $IMAGE_URI"
+        if ! docker buildx build "./src/$service/." --platform linux/amd64 --no-cache -t "$IMAGE_URI"; then
+            echo "Failed to build Docker image for $service"
             exit 1
         fi
+        echo "Docker image built successfully: $IMAGE_URI"
 
         echo "Pushing Docker image to ACR: $IMAGE_URI"
         if ! docker push "$IMAGE_URI"; then
-            echo "Failed to push Docker image"
+            echo "Failed to push Docker image for $service"
             exit 1
         fi
-
         echo "Docker image pushed successfully: $IMAGE_URI"
     done
 else

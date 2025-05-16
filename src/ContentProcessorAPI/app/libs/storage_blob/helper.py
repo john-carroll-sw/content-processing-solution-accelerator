@@ -1,13 +1,39 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+import os
+import logging
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 
 
 class StorageBlobHelper:
     def __init__(self, account_url, container_name=None):
+        self.logger = logging.getLogger("StorageBlobHelper")
+        self.logger.setLevel(logging.INFO)
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+        if not self.logger.hasHandlers():
+            self.logger.addHandler(handler)
+
+        self.logger.info(f"Initializing StorageBlobHelper with account_url: {account_url}, container_name: {container_name}")
+        # Log relevant environment variables (but not secrets)
+        for var in ["AZURE_STORAGE_CONNECTION_STRING", "APP_STORAGE_BLOB_URL", "APP_STORAGE_QUEUE_URL", "AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_CLIENT_SECRET"]:
+            if os.getenv(var):
+                if 'SECRET' in var or 'CONNECTION_STRING' in var:
+                    self.logger.info(f"Env var {var} is set (value hidden)")
+                else:
+                    self.logger.info(f"Env var {var} = {os.getenv(var)}")
+            else:
+                self.logger.info(f"Env var {var} is not set") 
+
         credential = DefaultAzureCredential()
+        # Try to get a token to see which credential is used
+        try:
+            token = credential.get_token("https://storage.azure.com/.default")
+            self.logger.info(f"DefaultAzureCredential acquired token for: {token.token[:10]}... (token truncated)")
+        except Exception as e:
+            self.logger.error(f"DefaultAzureCredential failed to acquire token: {e}")
         self.blob_service_client = BlobServiceClient(
             account_url=account_url, credential=credential
         )
@@ -39,9 +65,19 @@ class StorageBlobHelper:
         return container_client
 
     def _invalidate_container(self, container_name: str):
+        self.logger.info(f"Checking existence of container: {container_name}")
         container_client = self.blob_service_client.get_container_client(container_name)
-        if not container_client.exists():
+        try:
+            exists = container_client.exists()
+            self.logger.info(f"container_client.exists() returned: {exists}")
+        except Exception as e:
+            self.logger.error(f"container_client.exists() raised exception: {e}")
+            raise
+        if not exists:
+            self.logger.info(f"Container {container_name} does not exist. Creating container.")
             container_client.create_container()
+        else:
+            self.logger.info(f"Container {container_name} already exists.")
 
     def upload_blob(self, blob_name, file_stream, container_name=None):
         container_client = self._get_container_client(container_name)

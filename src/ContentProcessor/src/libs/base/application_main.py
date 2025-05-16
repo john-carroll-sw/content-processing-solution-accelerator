@@ -38,6 +38,17 @@ class AppMainBase(ABC, AppModelBase):
         self.application_context.set_configuration(AppConfiguration())
         self.application_context.set_kernel()
 
+        # Log all loaded config values (except secrets/connstr)
+        config_dict = self.application_context.configuration.model_dump()
+        for k, v in config_dict.items():
+            if "secret" in k or "connstr" in k:
+                logging.info(f"AppConfig: {k}: (hidden)")
+            else:
+                logging.info(f"AppConfig: {k}: {v}")
+        missing = [k for k, v in config_dict.items() if v is None]
+        if missing:
+            logging.warning(f"AppConfig: Missing required config keys: {missing}")
+
         if self.application_context.configuration.app_logging_enable:
             # Read Configuration for Logging Level as a Text then retrive the logging level
             logging_level = getattr(
