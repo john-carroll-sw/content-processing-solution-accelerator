@@ -132,7 +132,7 @@ module containerAppWeb 'deploy_container_app.bicep' = {
       }
       {
         name: 'APP_WEB_CLIENT_ID'
-        value: '<APP_REGISTRATION_CLIENTID>'
+        value: 'e53a2f17-5a67-44d8-8103-500e4f88630b'
       }
       {
         name: 'APP_WEB_AUTHORITY'
@@ -140,15 +140,15 @@ module containerAppWeb 'deploy_container_app.bicep' = {
       }
       {
         name: 'APP_WEB_SCOPE'
-        value: '<FRONTEND_API_SCOPE>'
+        value: 'api://e53a2f17-5a67-44d8-8103-500e4f88630b/user_impersonation'
       }
       {
         name: 'APP_API_SCOPE'
-        value: '<BACKEND_API_SCOPE>'
+        value: 'api://b010e15a-df8a-4d07-9b66-28f73e581547/user_impersonation'
       }
       {
         name: 'APP_CONSOLE_LOG_ENABLED'
-        value: 'false'
+        value: 'true'
       }
     ]
     minReplicas: minReplicaContainerWeb
